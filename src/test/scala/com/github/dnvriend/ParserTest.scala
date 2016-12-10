@@ -70,6 +70,13 @@ class ParserTest extends TestSpec {
     sbt.complete.DefaultParsers.Space.parse("abcde") should haveFailure("Expected whitespace character ...abcde")
   }
 
+  it should "have a 'SpaceClass' parser" in {
+    //  Matches a single whitespace character, as determined by Char.isWhitespace.
+    sbt.complete.DefaultParsers.SpaceClass.parse("") should haveFailure("Expected whitespace character")
+    sbt.complete.DefaultParsers.SpaceClass.parse("abcde") should haveFailure("Expected whitespace character ...abcde")
+    sbt.complete.DefaultParsers.SpaceClass.parse(" ") should beSuccess(' ')
+  }
+
   it should "have a 'NotSpace' parser" in {
     // Matches a non-empty String consisting of non-whitespace characters.
     sbt.complete.DefaultParsers.NotSpace.parse("abcde") should beSuccess("abcde")
