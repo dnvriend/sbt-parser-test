@@ -26,6 +26,21 @@ or failing by not consuming the entire stream of input.
 
 A more robust implementation would track the position information of failures for error reporting.
 
+Parsers are able to take an input stream and attempt to see if that string matches their expectations.
+If it does, the parser return a value, denoted in its type
+
+## Parser types
+Outside of SBT, so in any Scala project you can use the `Parser[T]` type to parse user input, but if you
+parse user input in SBT then you have more options:
+
+- __Parser[I]__: a basic parser that can be used outside SBT and does not use any settings,
+- __Initialize[Parser[I]]__: a parser whose definition depends on one or more settings
+- __Initialize[State => Parser[I]]__: a parser that is defined using both settings and the current state.
+
+## DefaultParsers
+The sbt completion library provides a core set of parsers within the ` sbt.complete.DefaultParsers` object
+that you can use to build up more-complex parsers.
+
 ## Input Tasks
 An input task is a task that _can_ accept additional user input before execution. It provides the interaction
 between the user (input) and the build tool and can provide context-sensitive help via tab completion.
@@ -52,7 +67,77 @@ and also exists to be executed repeatedly, and in that sense is similar to the T
 it can parse user input. The reason the InputKey can parse user input is that the user input is passed into the InputKey implicitly.
 Lets look at a working example:
 
+```scala
+// A key for a setting is of type SettingKey and represents a Setting
+val settingDemo: SettingKey[String] = settingKey[String]("Simple setting")
+
+settingDemo := Def.setting {
+  "Hello World!"
+}.value
+
+// A key for a Task is of type TaskKey and represents a Task
+val taskDemo: TaskKey[Unit] = taskKey[Unit]("simple 'Hello World' task")
+
+taskDemo := Def.task {
+  println("[TaskDemo]: " + settingDemo.value)
+}.value
+
+// A key for an inputTask is of type InputKey and represents an InputTask
+val inputKeyDemo: InputKey[Unit] = inputKey[Unit]("demo input key that accepts user input separated by spaces")
+
+inputKeyDemo := Def.inputTask {
+  //
+  // all the text you type after 'demo' in the sbt console, is called 'the user input'.
+  // the user input will be implicitly passed to this definition.
+  // (everything between // the brackets is alled the 'definition')
+  // and will be made available to the parser that we choose to use; here we use
+  // a simple, sort-of 'HelloWorld' parser the spaceDelimited parser.
+  //
+  val _userInput: Seq[String] = DefaultParsers.spaceDelimited("<arg>").parsed
+  val userInput: Seq[String] = Def.spaceDelimited().parsed // does the same as the line above
+  println("[InputKeyDemo]: The arguments to demo were:")
+  userInput.foreach(println)
+}.evaluated
+```
+
+We first create an InputKey that can be 'started' in the sbt console by typing 'demo'. The `DefaultParsers.spaceDelimited`
+is a handy method for parsing spacedelimited input and allows for a tab-completion message to be shown when you press the
+tab key. Here only the message "<arg>" will be shown on the console. When you press the enter key the user input will be parsed
+by the parser and the spaceDelimited parser will return the parsed input as a Seq[String], and the contents of that sequence
+will be shown on the console.
+
+## A note about user input
+We define user input as 'whatever the user enters __right after__ the name of the key which could be 'inputKeyDemo'. So
+for example if you have an inputKey with the name 'inputKeyDemo' and you type eg. 'inputKeyDemo a b c' then the
+inputTask will receive the following user input: __' a b c'__,  _note the starting space at the beginning_.
+
+So the user input is everything typed right after the name of the inputKey, which always will begin with a space.
+
+User input parsers must therefor always deal with this starting space, that is why the `DefaultParsers.spaceDelimited`
+parser for example starts parsing user input starting with a Space.
+
+## Calling InputTask
+The types involved in an input task are composable, so it is possible to reuse input tasks.
+
+The `.parsed` and `.evaluated` methods are defined on InputTasks to make this more convenient in common situations:
+
+- Call `.parsed` on an `InputTask[T]` or `Initialize[InputTask[T]]` to get the `Task[T]`
+  created after parsing the command line
+- Call `.evaluated` on an `InputTask[T]` or `Initialize[InputTask[T]]` to get the value of type `T`
+  from evaluating that task
+
+In both situations, the underlying Parser is sequenced with other parsers in the input task definition.
+In the case of `.evaluated`, the generated task is evaluated.
 
 
 
 
+## Notes
+http://stackoverflow.com/questions/34162484/illegal-dynamic-reference
+
+you'll need to define your work in a dynamic task http://www.scala-sbt.org/0.13/docs/Tasks.html#Dynamic+Computations+with which allows you to define your Task's dependencies based on things that are not well-defined at compile time.
+
+Remember, in sbt all tasks are really a map from their dependencies to the result and any time your type thing.value you're really writing (thing).map { valueOfThing => ... } once the macro has its wicked way.
+
+http://www.scala-sbt.org/0.13/docs/Custom-Settings.html
+https://github.com/sbt/sbt/issues/1993

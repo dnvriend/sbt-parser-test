@@ -141,6 +141,28 @@ class ParserTest extends TestSpec {
     sbt.complete.DefaultParsers.HexDigit.parse("F") should beSuccess('F')
   }
 
+  it should "have an 'any' parser" in {
+    // Parses any single character and provides that character as the result.
+    sbt.complete.DefaultParsers.any.parse("") should haveFailure("Expected any character")
+    sbt.complete.DefaultParsers.any.parse(" ") should beSuccess(' ')
+    sbt.complete.DefaultParsers.any.parse("a") should beSuccess('a')
+    sbt.complete.DefaultParsers.any.parse("0") should beSuccess('0')
+    sbt.complete.DefaultParsers.any.parse("-1") should haveFailure("Expected end of input. ...-1")
+  }
+
+  it should "have an 'ID' parser" in {
+    // Parses an identifier String, which must start with IDStart and contain zero or more IDChars after that.
+    // IDStart parses the first Char in an sbt identifier, which must be a Letter
+    // IDChars parses an identifier Char other than the first character. This includes letters, digits, dash `-`, and underscore `_`
+    // Basically it parses a valid identifier like person1
+    sbt.complete.DefaultParsers.ID.parse("") should haveFailure("Expected letter")
+    sbt.complete.DefaultParsers.ID.parse("1") should haveFailure("Expected letter ...1")
+    sbt.complete.DefaultParsers.ID.parse("p") should beSuccess("p")
+    sbt.complete.DefaultParsers.ID.parse("p1") should beSuccess("p1")
+    sbt.complete.DefaultParsers.ID.parse("p-1") should beSuccess("p-1")
+    sbt.complete.DefaultParsers.ID.parse("person1") should beSuccess("person1")
+  }
+
   it should "have a 'Bool' parser" in {
     // Parses the lower-case values true and false into their respesct Boolean values
     sbt.complete.DefaultParsers.Bool.parse("") should haveFailure("Expected 'true' ...Expected 'false'")
@@ -159,6 +181,11 @@ class ParserTest extends TestSpec {
   it should "have a 'EOF' parser" in {
     sbt.complete.DefaultParsers.EOF.parse("") should beSuccess(())
     sbt.complete.DefaultParsers.EOF.parse("foobar") should haveFailure("Excluded. ...foobar")
+  }
+
+  it should "have a 'literal' parser" in {
+    sbt.complete.DefaultParsers.literal("up").parse("") should haveFailure("Expected 'up'")
+    sbt.complete.DefaultParsers.literal("up").parse("up") should beSuccess("up")
   }
 
   // there are more parsers in the sbt.complete.DefaultParsers object/module

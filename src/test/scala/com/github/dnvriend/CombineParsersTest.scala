@@ -116,4 +116,30 @@ class CombineParsersTest extends TestSpec {
     blue.parse("abcde") should haveFailure("Expected 'blue' ...abcde")
     blue.parse("blue") should beSuccess(4)
   }
+
+  "up command" should "parse user input" in {
+    val migrationNumber: Parser[Int] = DefaultParsers.Digit.+.map(_.mkString.toInt)
+    val upsCommand: Parser[(String, Int)] = (DefaultParsers.literal("up") <~ DefaultParsers.Space) ~ migrationNumber <~ DefaultParsers.EOF
+    upsCommand.parse("") should haveFailure("Expected 'up'")
+    upsCommand.parse("up") should haveFailure("Expected whitespace character ...up")
+    upsCommand.parse("up ") should haveFailure("Expected digit ...up")
+    upsCommand.parse("up 1") should beSuccess(("up", 1))
+    upsCommand.parse("up 1 down") should haveFailure("Expected digit ...Excluded. ...up 1 down")
+  }
+
+  "down command" should "parse user input" in {
+    val migrationNumber: Parser[Int] = DefaultParsers.Digit.+.map(_.mkString.toInt)
+    val downCommand: Parser[(String, Int)] = ("down" <~ Space) ~ migrationNumber <~ EOF
+    downCommand.parse("down 1") should beSuccess(("down", 1))
+  }
+
+  "up/down command" should "parse user input" in {
+    val migrationNumber: Parser[Int] = DefaultParsers.Digit.+.map(_.mkString.toInt)
+    def genericCommand(startKey: String): Parser[(String, Int)] = (startKey <~ Space) ~ migrationNumber <~ EOF
+    val upDownParser: Parser[(String, Int)] = genericCommand("up") | genericCommand("down")
+    upDownParser.parse("up 1") should beSuccess(("up", 1))
+    upDownParser.parse("down 2") should beSuccess(("down", 2))
+    upDownParser.parse("foo 2") should haveFailure("Expected 'up' ...Expected 'down' ...foo 2")
+  }
+
 }
