@@ -70,6 +70,16 @@ class ParserTest extends TestSpec {
     sbt.complete.DefaultParsers.Space.parse("abcde") should haveFailure("Expected whitespace character ...abcde")
   }
 
+  it should "have a 'SpaceDelimited' parser" in {
+    //  Parses a space-delimited, possibly empty sequence of arguments.
+    // The arguments may use quotes and escapes according to StringBasic.
+    sbt.complete.DefaultParsers.spaceDelimited("<arg>").parse("") should beSuccess(Seq.empty[String])
+    sbt.complete.DefaultParsers.spaceDelimited("<arg>").parse(" ") should beSuccess(Seq.empty[String])
+    sbt.complete.DefaultParsers.spaceDelimited("<arg>").parse("abcde") should haveFailure("Expected whitespace character ...abcde")
+    sbt.complete.DefaultParsers.spaceDelimited("<arg>").parse(" abcde") should beSuccess(Seq("abcde"))
+    sbt.complete.DefaultParsers.spaceDelimited("<arg>").parse(" a b c d e") should beSuccess(Seq("a", "b", "c", "d", "e"))
+  }
+
   it should "have a 'SpaceClass' parser" in {
     //  Matches a single whitespace character, as determined by Char.isWhitespace.
     sbt.complete.DefaultParsers.SpaceClass.parse("") should haveFailure("Expected whitespace character")
