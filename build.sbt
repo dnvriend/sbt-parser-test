@@ -49,8 +49,18 @@ import sbt.complete.DefaultParsers._
 import sbt.complete.Parser
 
 // A key for a setting is of type SettingKey and represents a Setting
+val settingDemo2 = settingKey[String]("a setting")
+// we use the 'initialization' style here to define the setting, which is just a block of code
+// that must return a value and can use other settings to do so.
+// Implicitly, an appropriate initializer will be created and assigned to the key 'settingDemo2'
+settingDemo2 := {
+  "foo"
+}
+
+// A key for a setting is of type SettingKey and represents a Setting
 val settingDemo: SettingKey[String] = settingKey[String]("Simple setting")
 
+// here we use the explicit 'setting' initializer using 'Def.setting'.
 settingDemo := Def.setting {
   "Hello World!"
 }.value
@@ -76,7 +86,8 @@ inputKeyDemo := Def.inputTask {
 val upDownCmd: InputKey[UpDownCommand] = inputKey[UpDownCommand]("demo parsing user input and returning an UpDownCommand")
 
 upDownCmd := Def.inputTask {
-  val result = UpDownParser.parser.parsed
+//  val _result = UpDownParser.parser.parsed
+  val result = UpDownParser.initializingParser.parsed
   println("Executing command: " + result)
   result
 }.evaluated

@@ -189,4 +189,23 @@ class ParserTest extends TestSpec {
   }
 
   // there are more parsers in the sbt.complete.DefaultParsers object/module
+
+  "parsers" should "have reasonable default tab completion behavior" in {
+    sbt.complete.DefaultParsers.Bool.completions(1).toString shouldBe "Completions(true,false)"
+    sbt.complete.DefaultParsers.EOF.completions(1).toString() shouldBe "Completions()"
+    sbt.complete.DefaultParsers.ID.completions(1).toString() shouldBe "Completions()"
+    sbt.complete.DefaultParsers.any.completions(1).toString() shouldBe "Completions()"
+    sbt.complete.DefaultParsers.HexDigit.completions(1).toString() shouldBe "Completions(C,2,A,1,F,0,3,6,E,9,8,5,D,B,7,4)"
+    sbt.complete.DefaultParsers.IntBasic.completions(1).toString() shouldBe "Completions(-8,-9,-7,-1,-3,-0,-5,2,-2,1,0,3,6,-6,9,8,5,7,4,-4)"
+    sbt.complete.DefaultParsers.spaceDelimited("<arg>").completions(1).toString() shouldBe "Completions([ ]++ ,)"
+  }
+
+  it should "give examples and check input" in {
+    // '.examples' explicitly defines the completions for the original Parser
+    // check means 'only allow the user to enter these values'
+    // something that cannot be forced here, but it can be enforced by sbt
+    sbt.complete.DefaultParsers.any.examples(Set("a", "b", "1", "2"), check = true).parse("") should haveFailure("Expected any character")
+    sbt.complete.DefaultParsers.any.examples(Set("a", "b", "1", "2"), check = true).parse("z") should beSuccess('z')
+    sbt.complete.DefaultParsers.any.examples(Set("a", "b", "1", "2"), check = true).completions(1).toString shouldBe "Completions(a,b,1,2)"
+  }
 }

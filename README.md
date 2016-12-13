@@ -71,6 +71,7 @@ Lets look at a working example:
 // A key for a setting is of type SettingKey and represents a Setting
 val settingDemo: SettingKey[String] = settingKey[String]("Simple setting")
 
+// we can use multiple styles to define a
 settingDemo := Def.setting {
   "Hello World!"
 }.value
@@ -129,15 +130,25 @@ The `.parsed` and `.evaluated` methods are defined on InputTasks to make this mo
 In both situations, the underlying Parser is sequenced with other parsers in the input task definition.
 In the case of `.evaluated`, the generated task is evaluated.
 
+## Tab completion
+The sbt console comes with baked-in autocomplete options when typing commands. For users to see what possible things they can type,
+they hit Tab, and sbt will attempt to provide possible completions. Autocomplete or tab-completion can really streamline a workflow
+when used correctly. Tab completion is all about showing contextual help message to be shown when you press the
+tab key
 
+The `Parser.token` method takes an existing parser and gives it a label for the user. The main purpose of token is
+to determine the boundaries for suggestions.
 
 
 ## Notes
-http://stackoverflow.com/questions/34162484/illegal-dynamic-reference
+- http://stackoverflow.com/questions/34162484/illegal-dynamic-reference
 
 you'll need to define your work in a dynamic task http://www.scala-sbt.org/0.13/docs/Tasks.html#Dynamic+Computations+with which allows you to define your Task's dependencies based on things that are not well-defined at compile time.
 
 Remember, in sbt all tasks are really a map from their dependencies to the result and any time your type thing.value you're really writing (thing).map { valueOfThing => ... } once the macro has its wicked way.
 
-http://www.scala-sbt.org/0.13/docs/Custom-Settings.html
-https://github.com/sbt/sbt/issues/1993
+- http://www.scala-sbt.org/0.13/docs/Custom-Settings.html
+- https://github.com/sbt/sbt/issues/1993
+- http://www.scala-sbt.org/1.0/docs/Plugins-Best-Practices.html
+- https://github.com/sbt/sbt/issues/202
+- http://eed3si9n.com/4th-dimension-with-sbt-013
