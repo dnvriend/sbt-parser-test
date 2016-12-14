@@ -11,6 +11,7 @@ scalaVersion := "2.10.6"
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.2.7"
 libraryDependencies += "org.scala-sbt" % "completion" % "0.13.13"
 libraryDependencies += "org.scala-sbt" % "main-settings" % "0.13.13"
+libraryDependencies += "com.typesafe.play" %% "twirl-api" % "1.1.1"
 
 // testing
 libraryDependencies += "org.typelevel" %% "scalaz-scalatest" % "1.1.1" % Test  
@@ -39,7 +40,7 @@ headers := Map(
   "conf" -> Apache2_0("2016", "Dennis Vriend", "#")
 )
 
-enablePlugins(AutomateHeaderPlugin, SbtScalariform)
+enablePlugins(AutomateHeaderPlugin, SbtScalariform, SbtTwirl)
 
 ////
 // InputKeys
@@ -92,8 +93,17 @@ upDownCmd := Def.inputTask {
   result
 }.evaluated
 
+// greeting demo
 val greeting: InputKey[Option[Greeter.Person]] = inputKey[Option[Greeter.Person]]("Asks the users name and greets the user")
 
 greeting := {
   Greeter.greet(streams.value.log)
+}
+
+// scaffold demo
+
+val scaffold = inputKey[Unit]("demo scaffold")
+
+scaffold := {
+  Scaffold.scaffold(streams.value.log, baseDirectory.value, sourceDirectory.value)
 }

@@ -166,3 +166,18 @@ Remember, in sbt all tasks are really a map from their dependencies to the resul
 - [Sbt based command-line parser](http://labs.unacast.com/2016/05/19/sbt-based-commandline-synonym-lookup/)
 - https://www.lightbend.com/partners/become-a-partner
 - JLine keybindings
+- https://www.playframework.com/documentation/2.5.x/ScalaCustomTemplateFormat
+- https://github.com/playframework/twirl
+- https://github.com/spray/twirl
+- https://www.playframework.com/documentation/2.5.x/ScalaTemplates
+- https://www.playframework.com/documentation/2.5.x/ScalaCustomTemplateFormat
+
+## Twirl
+Twirl template files are expected to be placed under `src/main/twirl` or `src/test/twirl`, similar to scala or java sources.
+The source locations for template files can be configured.
+
+Template files must be named `{name}.scala.{ext}` where ext can be html, js, xml, or txt.
+
+The Twirl template compiler is automatically added as a source generator for both the main/compile and test configurations.
+When you run compile or test:compile the Twirl compiler will generate Scala source files from the templates and then these 
+Scala sources will be compiled along with the rest of your project.

@@ -1,0 +1,6 @@
+@(packageName: String, className: String, message: String)
+package @packageName
+
+object @className extends App {
+    println("@message")
+}
