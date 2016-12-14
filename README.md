@@ -152,3 +152,17 @@ Remember, in sbt all tasks are really a map from their dependencies to the resul
 - http://www.scala-sbt.org/1.0/docs/Plugins-Best-Practices.html
 - https://github.com/sbt/sbt/issues/202
 - http://eed3si9n.com/4th-dimension-with-sbt-013
+- http://stackoverflow.com/questions/28574678/prompt-for-user-input-when-running-scala-program-with-sbt
+- http://stackoverflow.com/questions/25632113/sbt-how-to-pass-input-from-one-inputtask-to-another-inputtask
+- http://www.scala-sbt.org/0.13/docs/Howto-After-Input-Task.html
+- http://www.ethanjoachimeldridge.info/tech-blog/how-to-create-sbt-task-that-takes-an-argument
+- http://stackoverflow.com/questions/28574678/prompt-for-user-input-when-running-scala-program-with-sbt
+- http://alvinalexander.com/scala/scala-shell-scripts-how-prompt-users-input-read
+- http://alvinalexander.com/scala/scala-shell-scripts-command-line-prompting-user-output-reading-input-console
+- http://www.scala-sbt.org/0.13/docs/Console-Project.html
+- http://www.scala-sbt.org/0.13/docs/Build-State.html
+- [sbt issue 2278 - Allow scripted tests to simulate user input to prompts](https://github.com/sbt/sbt/issues/2278)
+- [sbt - alter shell prompt - Interactive Mode](http://www.scala-sbt.org/0.13/docs/Howto-Interactive-Mode.html)
+- [Sbt based command-line parser](http://labs.unacast.com/2016/05/19/sbt-based-commandline-synonym-lookup/)
+- https://www.lightbend.com/partners/become-a-partner
+- JLine keybindings

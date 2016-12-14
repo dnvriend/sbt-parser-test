@@ -91,3 +91,9 @@ upDownCmd := Def.inputTask {
   println("Executing command: " + result)
   result
 }.evaluated
+
+val greeting: InputKey[Option[Greeter.Person]] = inputKey[Option[Greeter.Person]]("Asks the users name and greets the user")
+
+greeting := {
+  Greeter.greet(streams.value.log)
+}

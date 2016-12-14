@@ -1,3 +1,5 @@
+libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.2.7"
+
 // to format scala source code
 addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.6.0")
 
