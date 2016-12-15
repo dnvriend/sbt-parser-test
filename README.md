@@ -171,6 +171,8 @@ Remember, in sbt all tasks are really a map from their dependencies to the resul
 - https://github.com/spray/twirl
 - https://www.playframework.com/documentation/2.5.x/ScalaTemplates
 - https://www.playframework.com/documentation/2.5.x/ScalaCustomTemplateFormat
+- http://stackoverflow.com/questions/14441416/how-can-an-sbt-plugin-depend-on-another-plugin
+- http://stackoverflow.com/questions/25208943/how-to-fix-slf4j-class-path-contains-multiple-slf4j-bindings-at-startup-of-pl
 
 ## Twirl
 Twirl template files are expected to be placed under `src/main/twirl` or `src/test/twirl`, similar to scala or java sources.

@@ -1,5 +1,3 @@
-import sbt.Scoped.ScopingSetting
-
 name := "sbt-parser-test"
 
 organization := "com.github.dnvriend"
@@ -12,10 +10,13 @@ libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.2.7"
 libraryDependencies += "org.scala-sbt" % "completion" % "0.13.13"
 libraryDependencies += "org.scala-sbt" % "main-settings" % "0.13.13"
 libraryDependencies += "com.typesafe.play" %% "twirl-api" % "1.1.1"
+libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.1.7"
 
 // testing
 libraryDependencies += "org.typelevel" %% "scalaz-scalatest" % "1.1.1" % Test  
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1"
+
+libraryDependencies ~= (_.map(_.exclude("org.slf4j", "slf4j-nop")))
 
 fork in Test := true
 parallelExecution := false
@@ -101,9 +102,8 @@ greeting := {
 }
 
 // scaffold demo
+val scaffoldDemo = inputKey[Unit]("demo scaffold")
 
-val scaffold = inputKey[Unit]("demo scaffold")
-
-scaffold := {
+scaffoldDemo := {
   Scaffold.scaffold(streams.value.log, baseDirectory.value, sourceDirectory.value)
 }
